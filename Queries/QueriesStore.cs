@@ -206,7 +206,16 @@ namespace Queries
             //colon-separated, e.g. "AB: CD". The order of the pairs must be determined by the order
             //first elements of pairs (in ascending order), and for equal first elements - by the order of the second elements of pairs (in descending order).
 
-            throw new NotImplementedException();
+            var res = a.SelectMany(num => b, (elementA, elementB) => new
+            {
+                ElementA = elementA,
+                ElementB = elementB
+            }).Where(pairs => pairs.ElementA.Length == pairs.ElementB.Length)
+            .OrderBy(pairs => pairs.ElementA)
+            .ThenByDescending(pairs => pairs.ElementB).Select(pairs => $"{pairs.ElementA}:{pairs.ElementB}");
+
+
+            return res;
         }
 
         public static IEnumerable<string> Query15(IEnumerable<int> a)
@@ -219,9 +228,9 @@ namespace Queries
             //Indication. Use the GroupBy method.
             var res = a.GroupBy(element => element % 10, (lastNum, numbers) => new 
             {
-                Key = lastNum,
+                key = lastNum,
                 value = numbers.Sum()
-            }).Select(element => $"{element.Key}: {element.value}")
+            }).Select(element => $"{element.key}: {element.value}")
             .OrderBy(element=>element);
            
             return res;
@@ -233,8 +242,10 @@ namespace Queries
             //includes the following fields: <School number> <Entry year> <Last name>
             //Return a dictionary, where the key is the year, the value is the number of different schools that applicants graduated from this year.
             //Order the elements of the dictionary in ascending order of the number of schools, and for matching numbers - in ascending order of the year number.
+            var groupByYears = enrollees.GroupBy(applicant => applicant.YearGraduate);
+            var res = groupByYears.ToDictionary(key => key.Key, value => value.Count());
 
-            throw new NotImplementedException();
+            return res;
         }
     }
 }
