@@ -149,18 +149,8 @@ namespace Queries
             //character the first character of this string is taken; otherwise, the last character of the string is taken.
             //Sort the received characters in descending order of their codes.
             var chars = str.Select(element => element.Length % 2 != 0 ? element.First() : element.Last());
-            var res = str.Zip(chars, (code, character) => new { Code = code, Character = character })
-                .OrderByDescending(element => {
-                    int total = 0;
-                    foreach (var character in element.Code)
-                    {
-                        total += (int)character;
-                    }
-                    return total;
-                })
-                .Select(element => element.Character);
-
-            foreach (var element in res) { Console.WriteLine(element); }
+            var res = chars.OrderByDescending(character => (int)character);
+            
             return res;
         }
 
@@ -213,7 +203,6 @@ namespace Queries
             }).Where(pairs => pairs.ElementA.Length == pairs.ElementB.Length)
             .OrderBy(pairs => pairs.ElementA)
             .ThenByDescending(pairs => pairs.ElementB).Select(pairs => $"{pairs.ElementA}:{pairs.ElementB}");
-
 
             return res;
         }
